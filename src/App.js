@@ -5,11 +5,13 @@ function App() {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    const url = "https://pokeapi.co/api/v2/pokemon"
+    const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=20"
     axios
       .get(url)
       .then((response) => {
-      setData(response.data)
+        // console.log(response.data)
+        setData(response.data.results)
+    
     })
       .catch((err) => {
         console.error(err)
@@ -17,19 +19,26 @@ function App() {
 
   }, []) 
 
+  if(!data){
+    return <div>Loading...</div>
+  }
+
   return (
     <div className="">
-      {data.length > 0 ? (
-        data.map((pokemon) => (
-          <div key={pokemon.id} >
+      {data.map((pokemon, index) => {
+        // Extract Pokémon ID from the URL
+        const id = pokemon.url.split("/")[6];
+        const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
+        return (
+          <div key={index}>
+            <img src={imageUrl} alt={pokemon.name} />
+            <p>{pokemon.name}</p>
           </div>
-        ))
-      ) : (
-        <p>Loading</p>
-      )}
+        );
+      })}
     </div>
-  );
+  )
 }
 
 export default App;
