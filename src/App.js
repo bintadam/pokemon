@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react"
-
+import axios from "axios"
 
 function App() {
   const [data, setData] = useState(null)
@@ -18,8 +18,16 @@ function App() {
   }, []) 
 
   return (
-    <div className="App">
+    <div className="">
+      {data.length > 0 ? (
+        data.map((pokemon) => (
+          <div key={pokemon.id} >
 
+          </div>
+        ))
+      ) : (
+        <p>Loading</p>
+      )}
     </div>
   );
 }
