@@ -1,13 +1,11 @@
-import Pokemon from "./components/Pokemon";
 import PokemonList from "./components/PokemonList";
 
 function App() {
 
   return (
-    <di>
-      <Pokemon/>
+    <div className="px-12 py-16">
       <PokemonList/>
-    </di>
+    </div>
   )
 }
 
