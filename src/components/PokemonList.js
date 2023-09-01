@@ -5,19 +5,15 @@ import {BiSolidSortAlt} from "react-icons/bi"
 function PokemonList(){
     const [data, setData] = useState(null);
     const [searchTerm, setSearchTerm] = useState('')
-    const [ability, setAbility] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
           const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=150";
-          const abilityUrl = `https://pokeapi.co/api/v2/ability/{name}`;
           try {
-            const response1 = await axios.get(url);
-            setData(response1.data.results);
-            const response2 = await axios.get(abilityUrl);
-            console.log(response2.data)
-            setAbility(ability);
-            
+            const response = await axios.get(url);
+
+            setData(response.data.results);
+
           } catch (err) {
             console.error(err);
           }
@@ -30,8 +26,16 @@ function PokemonList(){
         const searchUrl = `https://pokeapi.co/api/v2/pokemon/${searchTerm}`;
         try {
           const response = await axios.get(searchUrl);
-          // Restructure the data to match the format of the list data
-          setData([{ name: response.data.name, url: response.data.species.url }]);
+
+          const abilities = response.data.abilities.map((abilityObj) =>abilityObj.ability.name)
+
+          setData([
+            { 
+                name: response.data.name, 
+                url: response.data.species.url,
+                abilities: abilities 
+            }
+        ]);
         } catch (err) {
           console.error(err);
           alert('No such Pokémon found.');
@@ -61,6 +65,9 @@ function PokemonList(){
                 <div key={index} className="px-16 py-8 border border-slate-300 rounded bg-slate-800 text-white">
                     <img src={imageUrl} alt={pokemon.name} />
                     <p className="font-semibold">{pokemon.name.toUpperCase()}</p>
+                    <div>
+                        Abilities : {pokemon.abilities.join(',')}
+                    </div>
                 </div>
             );
             })}
