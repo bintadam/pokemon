@@ -5,15 +5,29 @@ import {BiSolidSortAlt} from "react-icons/bi"
 function PokemonList(){
     const [data, setData] = useState(null);
     const [searchTerm, setSearchTerm] = useState('')
+    const [ability, setAbility] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
           const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=150";
           try {
             const response = await axios.get(url);
+            const pokemonsData = await Promise.all(
+              response.data.results.map(async (pokemon) => {
+                const detailedPokemonData = await axios.get(pokemon.url);
+                return {
+                  name: detailedPokemonData.data.name,
+                  url: pokemon.url,
+                  imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${detailedPokemonData.data.id}.png`,
 
-            setData(response.data.results);
+                  abilities: detailedPokemonData.data.abilities.map(abilityObj => abilityObj.ability.name),
 
+                  type: detailedPokemonData.data.types.map(type=> type.type.name).join (''),
+                  moves: detailedPokemonData.data.moves.map(move=>move.move.name).slice(0, 10).join(', '),
+                };
+              })
+            );
+            setData(pokemonsData);
           } catch (err) {
             console.error(err);
           }
@@ -28,6 +42,8 @@ function PokemonList(){
           const response = await axios.get(searchUrl);
 
           const abilities = response.data.abilities.map((abilityObj) =>abilityObj.ability.name)
+
+          setAbility(abilities)
 
           setData([
             { 
@@ -55,23 +71,22 @@ function PokemonList(){
                     <BiSolidSortAlt className="text-white"/>
                 </button>
             </form>
+
             <div className="grid grid-cols-6 gap-2">
             {data.map((pokemon, index) => {
-            // Extract Pokémon ID from the URL
-            const id = pokemon.url.split("/")[6];
-            const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
             return (
-                <div key={index} className="px-16 py-8 border border-slate-300 rounded bg-slate-800 text-white">
-                    <img src={imageUrl} alt={pokemon.name} />
-                    <p className="font-semibold">{pokemon.name.toUpperCase()}</p>
-                    <div>
-                        Abilities : {pokemon.abilities.join(',')}
-                    </div>
+                <div key={index} className="border border-slate-300 rounded bg-slate-800 ">
+                    <img className="px-12 py-6" src={pokemon.imageUrl} alt={pokemon.name} />
+                    <p className="font-extralight text-white p-4 text-sm">{pokemon.name.toUpperCase()}</p>
+                    <p>Abilities: {pokemon.abilities.join(', ')}</p>
+                    <p>Moves: {pokemon.moves}</p>
                 </div>
             );
             })}
+
             </div>
+
         </div>
     )
 }
