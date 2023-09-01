@@ -4,10 +4,11 @@ import axios from "axios"
 function PokemonList(){
     const [data, setData] = useState(null);
     const [searchTerm, setSearchTerm] = useState('')
+    const [ability, setAbility] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
-          const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=20";
+          const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=100";
           try {
             const response = await axios.get(url);
             setData(response.data.results);
@@ -31,6 +32,20 @@ function PokemonList(){
         }
     };
     
+    useEffect(() => {
+        const fetchedData =async () => {
+            const abilityUrl = `https://pokeapi.co/api/v2/ability/{id}/`;
+            try{
+                const response = await axios.get(abilityUrl);
+                console.log(response.data)
+                setAbility(response.data)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchedData()
+    }, [])
+
     if (!data) {
         return <div>Loading...</div>;
     }
@@ -41,7 +56,7 @@ function PokemonList(){
                 <input className="border border-slate-400 focus:outline-none mr-4 w-1/3 pl-4" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
                 <button className="text-white bg-slate-600 py-2 px-6 rounded" type="submit">Search</button>
             </form>
-            <div className="grid grid-cols-5 gap-10">
+            <div className="grid grid-cols-6 gap-10">
             {data.map((pokemon, index) => {
             // Extract Pokémon ID from the URL
             const id = pokemon.url.split("/")[6];
