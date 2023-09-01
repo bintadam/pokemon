@@ -7,9 +7,8 @@ function App() {
 
   useEffect(() => {
     const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=20"
-    const search = `https://pokeapi.co/api/v2/pokemon?q=${searchTerm}`
     axios
-      .get(url, search)
+      .get(url)
       .then((response) => {
         // console.log(response.data)
         setData(response.data.results)
@@ -18,22 +17,30 @@ function App() {
       .catch((err) => {
         console.error(err)
     });
+  }, []) 
+
+  const handleClick = () => {
+    const search = `https://pokeapi.co/api/v2/pokemon?q=${searchTerm}` 
     axios
       .get(search)
-      .then((response) => {
-        setSearchTerm(searchTerm)
+      .then((response) => { 
+        setSearchTerm(response.data)
       })
-  }, []) 
+      .catch((err) => {
+        console.error(err)
+      })
+  }
 
   if(!data){
     return <div>Loading...</div>
   }
 
+
   return (
     <div className="px-12 py-16">
       <form className="flex place-content-center mb-12 ">
-        <input className="border border-slate-400 focus:outline-none mr-4 w-1/3 pl-4"/>
-        <button className="text-white bg-slate-600 py-2 px-6 rounded" on>Search</button>
+        <input className="border border-slate-400 focus:outline-none mr-4 w-1/3 pl-4" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+        <button className="text-white bg-slate-600 py-2 px-6 rounded" onClick={handleClick}>Search</button>
       </form>
       <div className="grid grid-cols-5 gap-10">
         {data.map((pokemon, index) => {
