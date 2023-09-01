@@ -5,14 +5,19 @@ import {BiSolidSortAlt} from "react-icons/bi"
 function PokemonList(){
     const [data, setData] = useState(null);
     const [searchTerm, setSearchTerm] = useState('')
-    // const [ability, setAbility] = useState([])
+    const [ability, setAbility] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
           const url = "https://pokeapi.co/api/v2/pokemon?offset=20&limit=150";
+          const abilityUrl = `https://pokeapi.co/api/v2/ability/{name}`;
           try {
-            const response = await axios.get(url);
-            setData(response.data.results);
+            const response1 = await axios.get(url);
+            setData(response1.data.results);
+            const response2 = await axios.get(abilityUrl);
+            console.log(response2.data)
+            setAbility(ability);
+            
           } catch (err) {
             console.error(err);
           }
@@ -32,20 +37,6 @@ function PokemonList(){
           alert('No such Pokémon found.');
         }
     };
-    
-    useEffect(() => {
-        const fetchedData =async () => {
-            const abilityUrl = `https://pokeapi.co/api/v2/ability/`;
-            try{
-                const response = await axios.get(abilityUrl);
-                console.log(response.data)
-                // setAbility(response.data)
-            } catch (err) {
-                console.log(err)
-            }
-        }
-        fetchedData()
-    }, [])
 
     if (!data) {
         return <div>Loading...</div>;
@@ -67,7 +58,7 @@ function PokemonList(){
             const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
             return (
-                <div key={index} className="p-16 border border-slate-300 rounded bg-slate-400 text-white">
+                <div key={index} className="px-16 py-8 border border-slate-300 rounded bg-slate-800 text-white">
                     <img src={imageUrl} alt={pokemon.name} />
                     <p className="font-semibold">{pokemon.name.toUpperCase()}</p>
                 </div>
