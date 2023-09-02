@@ -18,15 +18,25 @@ function PokemonList(){
             const pokemonsData = await Promise.all(
               response.data.results.map(async (pokemon) => {
                 const detailedPokemonData = await axios.get(pokemon.url);
+                const speciesData = await axios.get(detailedPokemonData.data.species.url);
+                const description = speciesData.data.flavor_text_entries.find(entry => entry.language.name === "en").flavor_text;
+                const stats = detailedPokemonData.data.stats.map(statObj => {
+                  return {
+                    name: statObj.stat.name,
+                    value: statObj.base_stat
+                  };
+                });
                 return {
                   name: detailedPokemonData.data.name,
                   url: pokemon.url,
                   imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${detailedPokemonData.data.id}.png`,
 
                   abilities: detailedPokemonData.data.abilities.map(abilityObj => abilityObj.ability.name),
-
+                  description: description,
                   type: detailedPokemonData.data.types.map(type=> type.type.name).join (''),
                   moves: detailedPokemonData.data.moves.map(move=>move.move.name).slice(0, 10).join(', '),
+                  sprite: detailedPokemonData.data.sprite,
+                  stats: stats
                 };
               })
             );
