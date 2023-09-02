@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
 import {BiSolidSortAlt} from "react-icons/bi"
+import Modal from "./Modal";
 
 function PokemonList(){
     const [data, setData] = useState(null);
     const [searchTerm, setSearchTerm] = useState('')
-    const [ability, setAbility] = useState('')
+    const [showModal, setShowModel] = useState(false)
+    const [currentPokemon, setCurrentPokemon] = useState(null);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,21 +38,26 @@ function PokemonList(){
         fetchData();
     }, []);
 
+    const handleClick = (pokemon) => {
+      console.log("Pokemon clicked:", pokemon.name);
+      setCurrentPokemon(pokemon);
+      setShowModel(true);
+    }
+
+    const handleCloseModal = () => {
+      setShowModel(false)
+    }
+
     const handleSearch = async (e) => {
         e.preventDefault(); // to prevent form submission
         const searchUrl = `https://pokeapi.co/api/v2/pokemon/${searchTerm}`;
         try {
           const response = await axios.get(searchUrl);
 
-          const abilities = response.data.abilities.map((abilityObj) =>abilityObj.ability.name)
-
-          setAbility(abilities)
-
           setData([
             { 
                 name: response.data.name, 
                 url: response.data.species.url,
-                abilities: abilities 
             }
         ]);
         } catch (err) {
@@ -76,16 +84,17 @@ function PokemonList(){
             {data.map((pokemon, index) => {
 
             return (
-                <div key={index} className="border border-slate-300 rounded bg-slate-800 ">
+                <div key={index} className="border border-slate-300 rounded bg-slate-800 " onClick={() => handleClick(pokemon)}>
                     <img className="px-12 py-6" src={pokemon.imageUrl} alt={pokemon.name} />
                     <p className="font-extralight text-white p-4 text-sm">{pokemon.name.toUpperCase()}</p>
-                    <p>Abilities: {pokemon.abilities.join(', ')}</p>
-                    <p>Moves: {pokemon.moves}</p>
+                    {/* <p>Abilities: {pokemon.abilities.join(', ')}</p>
+                    <p>Moves: {pokemon.moves}</p> */}
                 </div>
             );
             })}
 
             </div>
+            { showModal && <Modal pokemon={currentPokemon} onClose={handleCloseModal}/>}
 
         </div>
     )
