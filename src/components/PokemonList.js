@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import {useMediaQuery} from 'react-responsive';
 import {BiSolidSortAlt} from "react-icons/bi"
-import { RingLoader } from 'react-spinners';
+import { FadeLoader } from 'react-spinners';
 import Modal from "./Modal";
 
 function PokemonList(){
@@ -99,7 +99,7 @@ function PokemonList(){
 
 
     if (!data) {
-        return <div className="border-t-5 border-gray-300 border-solid rounded-full w-12 h-12 animate-spin  flex place-content-center"><RingLoader/></div>;
+        return <div className="flex place-content-center"><FadeLoader className="border-t-0 border-gray-200 border-solid rounded-full w-6 h-6 mt-4"/></div>;
     }
     
     return (
