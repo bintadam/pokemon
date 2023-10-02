@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios"
 import {useMediaQuery} from 'react-responsive';
 import {BiSolidSortAlt} from "react-icons/bi"
+import { RingLoader } from 'react-spinners';
 import Modal from "./Modal";
 
 function PokemonList(){
@@ -98,13 +99,13 @@ function PokemonList(){
 
 
     if (!data) {
-        return <div className="uppercase flex place-content-center">Loading...</div>;
+        return <div className="border-t-5 border-gray-300 border-solid rounded-full w-12 h-12 animate-spin  flex place-content-center"><RingLoader/></div>;
     }
     
     return (
       <div className="">
         {isDesktop && ( 
-          <div>    
+          <div className="px-12 py-16">    
             <form className="flex place-content-center mb-12 " onSubmit={handleSearch}>
                 <input className="border border-slate-400 focus:outline-none mr-1 w-1/3 pl-4" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
                 <button className="text-white bg-slate-600 py-2 px-6 rounded-sm mr-1" type="submit">Search</button>
@@ -128,12 +129,12 @@ function PokemonList(){
           </div>
         )}
         {isMobile && (  
-          <div>   
-            <form className="" onSubmit={handleSearch}>
-                <input className="border border-slate-400 focus:outline-none mr-1 w-1/3 pl-4" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
-                <button className="text-white bg-slate-600 py-2 px-6 rounded-sm mr-1" type="submit">Search</button>
-                <button className="bg-slate-600 py-2 px-4 rounded-sm" onClick={handleSort}>
-                    <BiSolidSortAlt className="text-white"/>
+          <div className="px-6 py-3">   
+            <form className="mb-4" onSubmit={handleSearch}>
+                <input className="border border-slate-400 focus:outline-none mr-1 w-2/3 p-2" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+                <button className="text-white font-sm  bg-slate-600 py-2 px-4 rounded-sm mr-1" type="submit">Search</button>
+                <button className="bg-slate-600 mb-2 pt-2.5 pb-3.5 px-4 rounded-sm " onClick={handleSort}>
+                    <BiSolidSortAlt className="text-white w-6"/>
                 </button>
             </form>
 
@@ -142,8 +143,8 @@ function PokemonList(){
 
             return (
                 <div key={index} className="border border-slate-300 rounded bg-slate-100 " onClick={() => handleClick(pokemon)}>
-                    <img className="px-2 py-2" src={pokemon.imageUrl} alt={pokemon.name} />
-                    <p className="font-extralight text-black p-1 text-sm">{pokemon.name.toUpperCase()}</p>
+                    <img className="px-12 py-4" src={pokemon.imageUrl} alt={pokemon.name} />
+                    <p className="font-extralight text-black p-3 text-sm">{pokemon.name.toUpperCase()}</p>
                 </div>
             );
             })}
