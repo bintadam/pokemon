@@ -9,14 +9,6 @@ function Modal({pokemon, onClose}){
             <p className="text-medium font-bold">Abilities: <span className="text-base font-light text-slate-600">{pokemon.abilities.join(', ')}</span></p>
             <p className="text-medium font-bold">Type: <span className="text-base font-light text-slate-600">{pokemon.type}</span></p>
             <p className="text-medium font-bold">Moves: <span className="text-base font-light text-slate-600">{pokemon.moves}</span></p>
-            <div>
-            <p className="text-medium font-bold">Stats:</p>
-            <ul>
-                {pokemon.stats.map((stat, index) => (
-                    <li key={index}>{stat.name}: {stat.value}</li>
-                ))}
-            </ul>
-            </div>
             <button className="bg-slate-600 px-6 py-2 rounded mt-3 text-white font-semibold uppercase" onClick={onClose}>Close</button>
         </div>
     )
